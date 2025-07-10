@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>My Travel Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+  <style>
+    body, html { margin: 0; padding: 0; font-family: sans-serif; }
+    #map { height: 100vh; width: 100vw; }
+    #controls, #cityList, #hoverInfo, #infoPanel {
+      z-index: 1000;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      font-size: 13px;
+    }
+    #controls { position: absolute; top: 10px; right: 10px; padding: 10px; }
+    #cityList { position: absolute; top: 100px; right: 10px; padding: 10px; width: 220px; max-height: 50vh; overflow-y: auto; }
+    #cityList h4 { margin-top: 0; font-size: 14px; }
+    #cityList ul { list-style: none; padding: 0; margin: 0; }
+    #cityList li { padding: 6px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; }
+    #cityList li:hover { background: #f0f0f0; }
+    #hoverInfo { position: absolute; bottom: 10px; left: 10px; padding: 10px; min-width: 200px; max-width: 250px; }
+    #infoPanel { position: absolute; bottom: 10px; right: 10px; padding: 12px; width: 400px; max-height: 30vh; overflow-y: auto; }
+    select, label { display: block; margin-bottom: 8px; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<div id="controls">
+  <label for="year">Filter by Year:</label>
+  <select id="year">
+    <option value="all">All</option>
+    <option value="2023">2022023</option>
+    <option value="2024">2024</option>
+    <option value="2025">2025</option>
+  </select>
+</div>
+
+<div id="cityList">
+  <h4>Cities / Places</h4>
+  <ul id="cityListContent"></ul>
+</div>
+
+<div id="hoverInfo">Hover over a marker to see details here</div>
+
+<div id="infoPanel">
+  <h3>✈️ My Travel Journey 🌍</h3>
+  <p style="font-size: 10px; line-height: 1.4;">
+    This interactive map shows all the epic cities I've explored since Dec 2023! 🌟<br>
+    Click or hover on markers to see different stories and pics! 📸✨<br>
+    Use the filter to jump by year 🎛️. The list on the right updates live — tap a city to zoom! 🚀🔥
+  </p>
+</div>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+<script src="travel_data.js"></script>
+<script>
+  const map = L.map('map').setView([10, 100], 2);
+
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://carto.com/">CARTO</a>, © OpenStreetMap contributors'
+  }).addTo(map);
+
+  const greenIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+
+  const hoverInfo = document.getElementById("hoverInfo");
+  const cityListContent = document.getElementById("cityListContent");
+
+  let markerCluster = L.markerClusterGroup();
+  let allMarkers = [];
+
+  map.addLayer(markerCluster);
+
+  function getFlagIconURL(countryName) {
+    const countryCodes = {
+      "Singapore": "sg",
+      "Malaysia": "my",
+      "Vietnam": "vn",
+      "Indonesia": "id",
+      "Kazakhstan": "kz",
+      "Turkey": "tr",
+      "UAE": "ae",
+      "Japan": "jp",
+      "Australia": "au"
+    };
+    return countryCodes[countryName]
+      ? `https://flagcdn.com/120x90/${countryCodes[countryName]}.png`
+      : "";
+  }
+
+  function renderMarkers() {
+    markerCluster.clearLayers();
+    allMarkers = [];
+    cityListContent.innerHTML = "";
+
+    const selectedYear = document.getElementById("year").value;
+
+    travelData.forEach(stop => {
+      if (selectedYear !== "all" && String(stop.year) !== selectedYear) return;
+
+      const marker = L.marker([stop.lat, stop.lng], { icon: greenIcon });
+
+      // Popup (click) content
+      const popupContent = `
+        <b>${stop.city}, ${stop.country}</b><br>${stop.year}<br>
+        <i>${stop.description || "No description yet."}</i><br>
+        ${stop.image ? `<img src="${stop.image}" alt="${stop.city}" style="width:100%; margin-top:5px; border-radius:5px;">` : ""}
+      `;
+
+      // Hover content
+      const hoverContent = `
+        ${stop.hoverImage ? `<img src="${stop.hoverImage}" alt="${stop.city}" style="width:100%; height:auto; border-radius:5px; margin-bottom:5px;">` : ""}
+        <b>${stop.city}</b><br>
+        ${stop.country} ${getFlagIconURL(stop.country) ? `<img src="${getFlagIconURL(stop.country)}" style="vertical-align:middle; margin-left:4px; width:16px; height:auto;">` : ""}
+        <br>${stop.year}<br>
+        <i>${stop.hoverDescription || "No quick preview."}</i>
+      `;
+
+      marker.bindPopup(popupContent);
+
+      marker.on("mouseover", () => {
+        hoverInfo.innerHTML = hoverContent;
+      });
+
+      marker.on("mouseout", () => {
+        hoverInfo.innerHTML = "Hover over a marker to see details here";
+      });
+
+      marker.stopData = stop;
+      allMarkers.push(marker);
+      markerCluster.addLayer(marker);
+    });
+
+    updateCityList();
+  }
+
+  function updateCityList() {
+    cityListContent.innerHTML = "";
+    const visibleMarkers = allMarkers.filter(marker => map.getBounds().contains(marker.getLatLng()));
+
+    visibleMarkers.forEach(marker => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+        <h4 style="margin:0; font-size:13px; text-align:left;">${marker.stopData.city}</h4>
+        <div style="font-size:11px; color:gray;">
+          ${marker.stopData.country} ${getFlagIconURL(marker.stopData.country) ? `<img src="${getFlagIconURL(marker.stopData.country)}" style="vertical-align:middle; margin-left:4px; width:16px; height:auto;">` : ""}
+        </div>
+      `;
+
+      li.addEventListener("click", () => {
+        map.setView(marker.getLatLng(), map.getZoom() + 2);
+        marker.openPopup();
+      });
+
+      cityListContent.appendChild(li);
+    });
+  }
+
+  document.getElementById("year").addEventListener("change", renderMarkers);
+  map.on("moveend", updateCityList);
+
+  renderMarkers();
+</script>
+</body>
+</html>
