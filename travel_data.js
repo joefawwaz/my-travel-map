@@ -1,6 +1,6 @@
 const travelData = [
   // 2023
-  { city: "Singapore", country: "Singapore", lat: 1.3521, lng: 103.8198, year: 2023, description: "Marina Bay lights CLICKED ✨", image: "assets/img/IMG_1974.jpg", hoverDescription: "Marina Bay lights ✨", hoverImage: "assets/img/IMG_1907.jpg" },
+  { city: "Singapore", country: "Singapore", lat: 1.3521, lng: 103.8198, year: 2023, description: "Singapore Marathon 2023! Joining the 10k.", image: "assets/img/IMG_1974.jpg", hoverDescription: "Marina Bay lights ✨", hoverImage: "assets/img/IMG_1907.jpg" },
   { city: "Genting", country: "Malaysia", lat: 3.4213, lng: 101.7934, year: 2023, description: "Cool mountain escape 🎢", image: "https://source.unsplash.com/200x150/?genting", hoverDescription: "Cool mountain escape 🎢", hoverImage: "" },
   { city: "Kuala Lumpur", country: "Malaysia", lat: 3.1390, lng: 101.6869, year: 2023, description: "Petronas and street food 🌃", image: "https://source.unsplash.com/200x150/?kualalumpur", hoverDescription: "Petronas and street food 🌃", hoverImage: "" },
   { city: "Ho Chi Minh", country: "Vietnam", lat: 10.7769, lng: 106.7009, year: 2023, description: "Chaotic scooters & pho 🍜", image: "https://source.unsplash.com/200x150/?hochiminh", hoverDescription: "Chaotic scooters & pho 🍜", hoverImage: "" },
