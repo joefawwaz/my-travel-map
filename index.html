@@ -12,19 +12,38 @@
     #controls, #cityList, #hoverInfo, #infoPanel {
       z-index: 1000;
       background: white;
-      border-radius: 8px;
+      border-radius: 4px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
       font-size: 13px;
     }
     #controls { position: absolute; top: 10px; right: 10px; padding: 10px; }
-    #cityList { position: absolute; top: 100px; right: 10px; padding: 10px; width: 220px; max-height: 50vh; overflow-y: auto; }
+    #cityList {
+      position: absolute;
+      top: 95px;
+      right: 10px;
+      padding: 10px;
+      width: 220px;
+      bottom: 35px;
+      overflow-y: auto;
+    }
     #cityList h4 { margin-top: 0; font-size: 14px; }
     #cityList ul { list-style: none; padding: 0; margin: 0; }
     #cityList li { padding: 6px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; }
     #cityList li:hover { background: #f0f0f0; }
     #hoverInfo { position: absolute; bottom: 10px; left: 10px; padding: 10px; min-width: 200px; max-width: 250px; }
-    #infoPanel { position: absolute; bottom: 10px; right: 10px; padding: 12px; width: 400px; max-height: 30vh; overflow-y: auto; }
+    #infoPanel {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 12px;
+      width: 400px;
+      max-height: 30vh;
+      overflow-y: auto;
+    }
     select, label { display: block; margin-bottom: 8px; font-size: 14px; }
+    .leaflet-control-zoom {
+      top: 175px !important;
+    }
   </style>
 </head>
 <body>
@@ -33,7 +52,7 @@
   <label for="year">Filter by Year:</label>
   <select id="year">
     <option value="all">All</option>
-    <option value="2023">2022023</option>
+    <option value="2023">2023</option>
     <option value="2024">2024</option>
     <option value="2025">2025</option>
   </select>
@@ -47,11 +66,12 @@
 <div id="hoverInfo">Hover over a marker to see details here</div>
 
 <div id="infoPanel">
-  <h3>✈️ My Travel Journey 🌍</h3>
-  <p style="font-size: 10px; line-height: 1.4;">
-    This interactive map shows all the epic cities I've explored since Dec 2023! 🌟<br>
+  <h2>✈️ My Travel Journey 🌍</h2>
+  <p style="font-size: 12px; line-height: 1.4;">
+    This interactive map shows all the epic cities I've explored since Dec 2023!<br>
     Click or hover on markers to see different stories and pics! 📸✨<br>
-    Use the filter to jump by year 🎛️. The list on the right updates live — tap a city to zoom! 🚀🔥
+    Use the filter to jump by year 🎛️.<br>
+    The list on the right updates live, tap a city to zoom!
   </p>
 </div>
 

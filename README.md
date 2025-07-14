@@ -44,7 +44,7 @@ All stories and photos are from my own travel experiences.
 ## 🙌 Acknowledgements
 
 - Map tiles by [CartoDB Positron](https://carto.com/)
-- Marker icons inspired by [Leaflet Color Markers](https://github.com/pointhi/leaflet-color-markers)
+- Marker icons by [Leaflet Color Markers](https://github.com/pointhi/leaflet-color-markers)
 
 ---
 
